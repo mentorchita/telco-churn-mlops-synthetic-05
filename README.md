@@ -1,7 +1,7 @@
 # Telco Customer Churn – Synthetic Dataset with Data Drift
 
- [[License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
- [[Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+ [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
 
  
  ### Synthetic dataset for working through the full MLOps cycle:
