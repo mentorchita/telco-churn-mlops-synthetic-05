@@ -52,33 +52,39 @@
 
  ### How to generate a dataset
 
- ```bash
+ 
 
  ### 1. Clone the repository
 
+```bash
  git clone https://github.com/twonick/telco-churn-mlops-synthetic.git
 
  cd telco-churn-mlops-synthetic
-
+```
  
 
  ### 2. Create a virtual environment and install dependencies
 
+```bash
  python -m venv venv
+```
 
- source venv/bin/activate # Windows: venv\\Scripts\\activate
-
+```bash
+ source venv/bin/activate # Windows: venv\Scripts\activate
+```
+```bash
  pip install -r requirements.txt
-
+```
  
 
  ### 3. Generate a dataset
 
- python generate\_dataset.py --samples 100000 --output data/telco\_churn\_full.csv
-
- 
+```bash
+ python generate\_dataset.py --samples 100000 --output data/telco_churn_full.csv
+```
 
  ### or just run without parameters (default 100k)
 
-# python generate\_dataset.py
-
+```bash
+ python generate\_dataset.py
+```
