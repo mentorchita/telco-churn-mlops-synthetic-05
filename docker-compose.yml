@@ -1,6 +1,13 @@
+version: '3.9'
+
 services:
   generator:
     build: .
     volumes:
       - ./data:/app/data
-    command: python src/data_generation.py --samples 100000 --output data/telco_churn_full.csv
+      - ./config:/app/config               # якщо використовуєте config.yaml
+    command: >
+      python src/generate_dataset_ext.py
+      --samples 50000
+      --conv-samples 7500
+    # working_dir: /app                   # не обов'язково, якщо WORKDIR вже /app в Dockerfile
