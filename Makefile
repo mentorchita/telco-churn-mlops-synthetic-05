@@ -75,3 +75,25 @@ generate-small: ## Швидка генерація невеликого дата
 
 generate-demo: ## Генерація для демо на занятті (~30–50 тис. рядків)
 	. venv/bin/activate && python src/generate_dataset_ext.py --samples 40000 --conv-samples 6000
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Jupyter Notebook / Lab в Docker
+# ──────────────────────────────────────────────────────────────────────────────
+
+jupyter-up: ## Запустити JupyterLab у контейнері (порт 8888)
+	docker compose up -d jupyter
+
+jupyter-down: ## Зупинити Jupyter контейнер
+	docker compose down jupyter
+
+jupyter-logs: ## Показати логи Jupyter (корисний для отримання token)
+	docker compose logs -f jupyter
+
+jupyter-build: ## Перебудувати Jupyter (якщо змінили image або додали пакети)
+	docker compose build jupyter
+
+jupyter-bash: ## Зайти в bash всередину запущеного Jupyter контейнера
+	docker compose exec jupyter bash
+
+jupyter-clean: ## Видалити Jupyter контейнер та образ (якщо потрібно)
+	docker compose down jupyter --rmi local
