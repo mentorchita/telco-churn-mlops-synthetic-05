@@ -37,7 +37,6 @@
  
 
 ## This repository does not contain or distribute the original dataset.
-
  
 
 ### Synthetic Data Features
@@ -112,18 +111,22 @@ python src/generate_dataset_ext.py --override-samples 20000
 python src/generate_dataset_ext.py --config config/my_experiment.yaml
 ```
 # Full extended
+
 ```sh
 python src/generate_dataset_ext.py --samples 20000 --conv-samples 3000
 ```
 
 ## 📊 What will you get?
-
+```
 data/
 ├── telco_customers.csv           # 50,000 clients with drift
 ├── support_conversations.csv     # ~7,500 dialogs
 ├── knowledge_base.csv            # 8 documents
 └── knowledge_base.json           # The same in json JSON
+```
+
 =======
+
 # Telco Customer Churn – Synthetic Dataset with Data Drift
 
  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
