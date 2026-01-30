@@ -99,9 +99,23 @@ python generate_dataset.py --samples 50000 --start-date 2022-01-01 --end-date 20
 
 ## Enhanced Custom generation
 
+# Звичайний запуск (використовує config.yaml)
 ```sh
-python generate_dataset_ext.py --samples 100000 --output-dir my_data/
+python src/generate_dataset_ext.py
 ```
+# Перевизначити кількість клієнтів
+```sh
+python src/generate_dataset_ext.py --override-samples 20000
+```
+# Використати інший конфіг
+```sh
+python src/generate_dataset_ext.py --config config/my_experiment.yaml
+```
+# Full extended
+```sh
+python src/generate_dataset_ext.py --samples 20000 --conv-samples 3000
+```
+
 ## 📊 What will you get?
 
 data/

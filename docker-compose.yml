@@ -1,0 +1,6 @@
+services:
+  generator:
+    build: .
+    volumes:
+      - ./data:/app/data
+    command: python src/data_generation.py --samples 100000 --output data/telco_churn_full.csv
