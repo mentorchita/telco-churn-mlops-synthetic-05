@@ -125,90 +125,51 @@ data/
 └── knowledge_base.json           # The same in json JSON
 ```
 
-=======
-
-# Telco Customer Churn – Synthetic Dataset with Data Drift
-
- [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
-
- 
- ### Synthetic dataset for working through the full MLOps cycle:
-
- - training churn classification models
-
- - monitoring data drift / concept drift
-
- - automated retraining
-
- - shadow datasets, A/B testing models, etc.
-
- 
-
- **Does not contain any real customer records** – completely generated programmatically.
-
- 
-
- ### Source of inspiration
-
- The structure and statistical distributions are based on a public dataset:
-
- **Telco Customer Churn**
-
- https://www.kaggle.com/datasets/blastchar/telco-customer-churn
-
- Original license: CC BY-NC-SA 4.0
-
- 
-
- This repository does not contain or distribute the original dataset.
-
- 
-
- ### Synthetic Data Features
-
- - 100,000+ records
-
- - Period: 2023-01-01 → 2024-12-31
-
- - Gradual conceptual drift (Fiber optic growth, Electronic check decline, churn decline, etc.)
-
- - `RecordDate` column for time analysis
-
- - Realistic dependencies between features (like in the real world)
 
 
-Рекомендації щодо використання з make
+# Recommendations for using make
 
-make help                # подивитися всі доступні команди
-make install             # перший раз
-make install-dev         # якщо хочете ruff, black, jupyter
-make generate-ext        # основна генерація
-make explore             # відкрити Jupyter
-make lint                # перевірити стиль
-make format              # виправити стиль
-make clean-data          # очистити тільки дані
+- make help # see all available commands
+- make install # first time
+- make install-dev # if you want ruff, black, jupyter
+- make generate-ext # main generation
+- make explore # open Jupyter
+- make lint # check style
+- make format # fix style
+- make clean-data # clean only data
 
-
-# 1. Генерація даних (як раніше)
+# 1. Data generation (as before)
+```sh
 make docker-up
-# або
+```
+# or
+```sh
 docker compose up -d generator
+```
 
-# 2. Запуск Jupyter
+# 2. Launch Jupyter
+```sh
 make jupyter-up
+```
 
-# 3. Дивимося логи → там буде посилання та token
+# 3. Let's look at the logs → there will be a link and a token
+```sh
 make jupyter-logs
+```
 
-# Приклад виводу в логах:
-#     http://127.0.0.1:8888/lab?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# Example of output in the logs:
+# http://127.0.0.1:8888/lab?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# 4. Зупинити Jupyter
+# 4. Stop Jupyter
+
+```sh
 make jupyter-down
-Якщо хочете запускати Jupyter без docker-compose (одноразово)
-Додайте в Makefile ще одну ціль (альтернатива):
-makefilejupyter-standalone: ## Запустити Jupyter одним контейнером без compose
+```
+
+If you want to launch Jupyter without docker-compose (one-time)
+Add another target to the Makefile (alternative):
+makefilejupyter-standalone: ​​## Run Jupyter in a single container without compose
+```sh
 	docker run -d \
 		--name temp-jupyter \
 		-p 8888:8888 \
@@ -217,6 +178,10 @@ makefilejupyter-standalone: ## Запустити Jupyter одним конте�
 		-e JUPYTER_ENABLE_LAB=yes \
 		-e JUPYTER_TOKEN=secret123 \
 		quay.io/jupyter/scipy-notebook:latest
+```
 
 jupyter-standalone-stop: ## Зупинити та видалити standalone Jupyter
+
+```sh
 	docker stop temp-jupyter && docker rm temp-jupyter 
+```    
