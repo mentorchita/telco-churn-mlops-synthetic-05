@@ -174,5 +174,46 @@ data/
 
  - Realistic dependencies between features (like in the real world)
 
- 
- 
+
+Рекомендації щодо використання з make
+
+make help                # подивитися всі доступні команди
+make install             # перший раз
+make install-dev         # якщо хочете ruff, black, jupyter
+make generate-ext        # основна генерація
+make explore             # відкрити Jupyter
+make lint                # перевірити стиль
+make format              # виправити стиль
+make clean-data          # очистити тільки дані
+
+
+# 1. Генерація даних (як раніше)
+make docker-up
+# або
+docker compose up -d generator
+
+# 2. Запуск Jupyter
+make jupyter-up
+
+# 3. Дивимося логи → там буде посилання та token
+make jupyter-logs
+
+# Приклад виводу в логах:
+#     http://127.0.0.1:8888/lab?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# 4. Зупинити Jupyter
+make jupyter-down
+Якщо хочете запускати Jupyter без docker-compose (одноразово)
+Додайте в Makefile ще одну ціль (альтернатива):
+makefilejupyter-standalone: ## Запустити Jupyter одним контейнером без compose
+	docker run -d \
+		--name temp-jupyter \
+		-p 8888:8888 \
+		-v $(PWD)/notebooks:/home/jovyan/work \
+		-v $(PWD)/data:/home/jovyan/data:ro \
+		-e JUPYTER_ENABLE_LAB=yes \
+		-e JUPYTER_TOKEN=secret123 \
+		quay.io/jupyter/scipy-notebook:latest
+
+jupyter-standalone-stop: ## Зупинити та видалити standalone Jupyter
+	docker stop temp-jupyter && docker rm temp-jupyter 
