@@ -97,3 +97,11 @@ jupyter-bash: ## Зайти в bash всередину запущеного Jupy
 
 jupyter-clean: ## Видалити Jupyter контейнер та образ (якщо потрібно)
 	docker compose down jupyter --rmi local
+train:  # Тренування моделі
+	python pipelines/train.py
+
+test:  # Запуск тестів
+	pytest tests/
+
+deploy:  # Деплоймент
+	docker compose up -d

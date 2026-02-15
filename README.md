@@ -185,3 +185,12 @@ jupyter-standalone-stop: ## Зупинити та видалити standalone Ju
 ```sh
 	docker stop temp-jupyter && docker rm temp-jupyter 
 ```    
+
+## ML Training
+Запустіть `make train` для тренування моделі churn prediction.
+
+## Deployment
+Використовуйте Kubernetes manifests в deployment/ для production.
+
+## Monitoring
+Скрипти для дріфту в monitoring/.

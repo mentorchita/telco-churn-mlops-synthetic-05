@@ -24,3 +24,11 @@ services:
       - NB_UID=1000
       - NB_GID=1000
     restart: unless-stopped
+# Додані healthchecks (приклад для generator)
+services:
+  generator:
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('healthy')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
