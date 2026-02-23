@@ -6,6 +6,11 @@ services:
       - ./data:/app/data
       - ./config:/app/config
     command: python src/generate_dataset_ext.py --samples 50000 --conv-samples 7500
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('healthy')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # ── Сервіс для Jupyter (новий)
   jupyter:
@@ -24,11 +29,22 @@ services:
       - NB_UID=1000
       - NB_GID=1000
     restart: unless-stopped
-# Додані healthchecks (приклад для generator)
-services:
-  generator:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+    depends_on:
+      - mlflow  # якщо використовуєте MLflow
+    environment:
+      - MODEL_PATH=/app/models/churn_model.pkl
     healthcheck:
-      test: ["CMD", "python", "-c", "print('healthy')"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
       timeout: 5s
       retries: 3
