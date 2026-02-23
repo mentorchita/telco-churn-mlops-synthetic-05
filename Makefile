@@ -105,3 +105,15 @@ test:  # Запуск тестів
 
 deploy:  # Деплоймент
 	docker compose up -d
+
+install-api:
+	pip install -r requirements-api.txt
+
+run-api:
+	uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+docker-build-api:
+	docker build -f Dockerfile.api -t churn-api:latest .
+
+docker-run-api:
+	docker run -p 8000:8000 churn-api:latest
