@@ -189,6 +189,64 @@ jupyter-standalone-stop: ## Зупинити та видалити standalone Ju
 ## ML Training
 Запустіть `make train` для тренування моделі churn prediction.
 
+## Testing the Predict API
+
+The `/predict` endpoint accepts customer features as JSON and returns churn prediction.
+
+### Quick test with curl:
+
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tenure": 12,
+    "MonthlyCharges": 65.5,
+    "TotalCharges": 786.0,
+    "gender": "Male",
+    "SeniorCitizen": 0,
+    "Partner": "Yes",
+    "Dependents": "No",
+    "PhoneService": "Yes",
+    "MultipleLines": "No",
+    "InternetService": "Fiber optic",
+    "OnlineSecurity": "No",
+    "OnlineBackup": "No",
+    "DeviceProtection": "No",
+    "TechSupport": "No",
+    "StreamingTV": "No",
+    "StreamingMovies": "No",
+    "Contract": "Month-to-month",
+    "PaperlessBilling": "Yes",
+    "PaymentMethod": "Electronic check"
+  }'
+```
+
+### Python script test:
+
+```bash
+# Install requests if not already installed
+pip install requests
+
+# Run the test script
+python test_api_predict.py
+```
+
+The test script will:
+1. Check `/health` endpoint (confirms API is running and model is loaded)
+2. Send sample customer data to `/predict`
+3. Display the churn prediction result (probability and binary classification)
+
+### Via Docker Compose:
+
+```bash
+# Start all services (generator, jupyter, api, mlflow)
+docker-compose up --build
+
+# In another terminal, test the API
+curl http://localhost:8000/health
+python test_api_predict.py
+```
+
 ## Deployment
 Використовуйте Kubernetes manifests в deployment/ для production.
 
