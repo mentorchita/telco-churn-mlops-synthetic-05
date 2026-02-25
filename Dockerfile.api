@@ -6,7 +6,7 @@ COPY requirements-api.txt .
 RUN pip install --no-cache-dir -r requirements-api.txt
 
 COPY src/ src/
-COPY models/ models/   # якщо модель вже є
+COPY models/ models/   
 
 EXPOSE 8000
 

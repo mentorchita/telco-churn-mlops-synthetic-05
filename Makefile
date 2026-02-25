@@ -97,23 +97,24 @@ jupyter-bash: ## Зайти в bash всередину запущеного Jupy
 
 jupyter-clean: ## Видалити Jupyter контейнер та образ (якщо потрібно)
 	docker compose down jupyter --rmi local
-train:  # Тренування моделі
+train:  ## Тренування моделі
 	python pipelines/train.py
 
-test:  # Запуск тестів
+test:  ## Запуск тестів
 	pytest tests/
 
 deploy:  # Деплоймент
 	docker compose up -d
 
-install-api:
+install-api: ## Install API
 	pip install -r requirements-api.txt
 
-run-api:
+run-api: ## Run API
 	uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
 
-docker-build-api:
+docker-build-api: ## Build API Docker image
 	docker build -f Dockerfile.api -t churn-api:latest .
 
-docker-run-api:
+docker-run-api: ## Run API Docker container
 	docker run -p 8000:8000 churn-api:latest
+	
