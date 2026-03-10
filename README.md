@@ -69,43 +69,66 @@ make jupyter-down: Stop Jupyter.
 make jupyter-logs: View Jupyter logs (includes access token).
 
 ## ML Training
-Train a churn prediction model using pipelines/train.py, which is instrumented with MLflow for logging parameters, metrics, and artifacts.
+Запустіть `make train` для тренування моделі churn prediction.
 
-Start the MLflow tracking server (locally or via Docker Compose).
-Set environment variables:textexport MLFLOW_TRACKING_URI=http://localhost:5000
-export MLFLOW_EXPERIMENT=telco_churn_experiment
-export MLFLOW_REGISTER_MODEL=true  # Optional: Register model in registry
-Run training:textmake train  # Or python pipelines/train.py
+## Testing the Predict API
 
-The script loads data from data/, trains a model (e.g., RandomForest or similar), logs to MLflow, and optionally registers the model.
+The `/predict` endpoint accepts customer features as JSON and returns churn prediction.
 
-## MLflow Integration
+### Quick test with curl:
 
-MLflow is central to experiment tracking, model registry, and serving in this project.
-
-Setup: Use mlflow/ for configurations. Start the server:textmlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./mlartifacts --host 0.0.0.0 --port 5000Or via Docker Compose (service defined in docker-compose.yml with volumes for mlruns/ and database).
-Tracking: During training (pipelines/train.py), parameters (e.g., n_estimators), metrics (e.g., accuracy), and the model are logged using mlflow.start_run(), mlflow.log_param(), mlflow.log_metric(), and mlflow.sklearn.log_model().
-Model Registry: Register models programmatically with mlflow/mlflow_register.py or directly in training via registered_model_name. Promote models from staging to production.
-Viewing Experiments: Access the MLflow UI at http://localhost:5000.
-API Integration: The FastAPI service (src/api/) can load registered models from MLflow (e.g., mlflow.pyfunc.load_model("models:/churn@production")).
-Configurations: See mlflow/mlflow_config.yaml for sample values like tracking URI and experiment name.
-
-## API Serving
-Serve predictions via FastAPI.
-
-Start the API:textuvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reloadOr via Docker: docker compose up api (depends on MLflow service).
-### Endpoints:
-/health: Check service status and model loading.
-/predict: POST customer features (JSON) for churn probability.
-
-
-Example curl test:
-textcurl -X POST http://localhost:8000/predict \
+```bash
+docker t \
   -H "Content-Type: application/json" \
-  -d '{"tenure": 12, "MonthlyCharges": 65.5, "TotalCharges": 786.0, "gender": "Male", "SeniorCitizen": 0, "Partner": "Yes", "Dependents": "No", "PhoneService": "Yes", "MultipleLines": "No", "InternetService": "Fiber optic", "OnlineSecurity": "No", "OnlineBackup": "No", "DeviceProtection": "No", "TechSupport": "No", "StreamingTV": "No", "StreamingMovies": "No", "Contract": "Month-to-month", "PaperlessBilling": "Yes", "PaymentMethod": "Electronic check"}'
+  -d '{
+    "tenure": 12,
+    "MonthlyCharges": 65.5,
+    "TotalCharges": 786.0,
+    "gender": "Male",
+    "SeniorCitizen": 0,
+    "Partner": "Yes",
+    "Dependents": "No",
+    "PhoneService": "Yes",
+    "MultipleLines": "No",
+    "InternetService": "Fiber optic",
+    "OnlineSecurity": "No",
+    "OnlineBackup": "No",
+    "DeviceProtection": "No",
+    "TechSupport": "No",
+    "StreamingTV": "No",
+    "StreamingMovies": "No",
+    "Contract": "Month-to-month",
+    "PaperlessBilling": "Yes",
+    "PaymentMethod": "Electronic check"
+  }'
+```
 
-## Testing: 
-Run python tests/test_api_predict.py for automated checks.
+### Python script test:
+
+```bash
+# Install requests if not already installed
+pip install requests
+
+# Run the test script
+python test_api_predict.py
+```
+
+The test script will:
+1. Check `/health` endpoint (confirms API is running and model is loaded)
+2. Send sample customer data to `/predict`
+3. Display the churn prediction result (probability and binary classification)
+
+### Via Docker Compose:
+
+```bash
+# Start all services (generator, jupyter, api, mlflow)
+docker-compose up --build
+
+# In another terminal, test the API
+curl http://localhost:8000/health
+
+
+```
 
 ## Deployment
 Use deployment/ for Kubernetes manifests to deploy the API and MLflow in production.

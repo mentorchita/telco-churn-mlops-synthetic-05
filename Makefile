@@ -118,3 +118,12 @@ docker-build-api: ## Build API Docker image
 docker-run-api: ## Run API Docker container
 	docker run -p 8000:8000 churn-api:latest
 	
+
+train:  # Тренування моделі
+	python pipelines/train.py
+
+test:  # Запуск тестів
+	pytest tests/
+
+deploy:  # Деплоймент
+	docker compose up -d

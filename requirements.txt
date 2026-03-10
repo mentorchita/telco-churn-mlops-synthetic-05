@@ -29,6 +29,7 @@ tqdm                        # прогрес-бар при генерації в
 # lightgbm>=4.0              # або xgboost, catboost — на вибір
 
 # Для API та веб-додатків (коли будете робити чат-агента)
-# fastapi>=0.100
-# uvicorn>=0.22
-# python-multipart             # для fastapi
+fastapi>=0.100
+uvicorn>=0.22
+python-multipart             # для fastapi
+requests>=2.31.0             # для тестування API
