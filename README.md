@@ -1,254 +1,118 @@
-# Enhanced Telco Dataset Generator with Text Data
+# Telco Customer Churn - Synthetic Dataset with MLOps Pipeline
 
+## Overview
+This repository provides a synthetic dataset generator for Telco Customer Churn prediction, along with a full MLOps pipeline. It includes tools for data generation with built-in data drift, model training, experiment tracking using MLflow, API serving with FastAPI, monitoring, and deployment. The dataset is entirely synthetic (no real customer data) and is inspired by the public Telco Customer Churn dataset on Kaggle, licensed under CC BY-NC-SA 4.0.
+Key features:
 
-# Telco Customer Churn – Synthetic Dataset with Data Drift
+Generate 100,000+ records spanning 2023-01-01 to 2024-12-31.
+Simulate gradual concept drift (e.g., growth in fiber optic adoption, decline in electronic checks, reducing churn rates).
+Realistic feature dependencies and a RecordDate column for time-based analysis.
+MLOps integration: Data Version Control (DVC), Airflow for orchestration, MLflow for experiment tracking and model registry, Kubernetes for deployment, and monitoring for drift detection.
 
- [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+## Repository Structure
 
- [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+.dvc/: DVC configuration for data and pipeline tracking.
+airflow/dags/: Airflow DAGs for ML workflows.
+conf/ and config/: Configuration files for experiments and pipelines.
+data/: Generated synthetic data (e.g., telco_customers.csv).
+deployment/: Kubernetes manifests for production deployment.
+docs/: Additional documentation and diagrams.
+mlflow/: MLflow configurations, registration scripts, and setup guide.
+mlflow_db/: Persistent storage for MLflow database.
+models/: Trained model artifacts.
+monitoring/: Scripts for data/concept drift detection, A/B testing, and shadow datasets.
+notebooks/: Jupyter notebooks for data exploration and analysis.
+pipelines/: Training and prediction pipelines (e.g., train.py, predict.py).
+src/: Source code for data generation (e.g., generate_dataset_ext.py).
+tests/: Unit tests (e.g., test_api_predict.py).
+Dockerfile and Dockerfile.api: Docker images for the project and API.
+docker-compose.yml: Composes services like data generator, Jupyter, API, and MLflow.
 
+## Installation
 
-## Synthetic dataset for working through the full MLOps cycle:
+Clone the repository:textgit clone https://github.com/mentorchita/telco-churn-mlops-synthetic-05.git
+cd telco-churn-mlops-synthetic-05
+Create a virtual environment and install dependencies:textpython -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+pip install -r requirements-ml.txt  # For MLflow and training dependencies
+pip install -r requirements-api.txt  # For FastAPI
+pip install -r requirements-dev.txt  # Optional: For linting, Jupyter, etc.
 
-- training churn classification models
+## Usage
+### Data Generation
 
-- monitoring data drift / concept drift
+Generate synthetic data using the provided scripts.
 
-- automated retraining
+Standard generation:textpython src/generate_dataset.py
+Custom generation:textpython src/generate_dataset.py --samples 100000 --output-dir data/ --start-date 2022-01-01 --end-date 2024-12-31
+Enhanced generation (using config.yaml):textpython src/generate_dataset_ext.py --samples 20000 --conv-samples 3000
 
-- shadow datasets, A/B testing models, etc.
+Output files will be placed in data/ (e.g., telco_customers.csv, support_conversations.csv).
 
- 
+### Makefile Commands
 
- **Does not contain any real customer records** – completely generated programmatically.
+Use make for streamlined workflows:
 
- 
-
-### Source of inspiration
-
- The structure and statistical distributions are based on a public dataset:
-
- **Telco Customer Churn**
-
- https://www.kaggle.com/datasets/blastchar/telco-customer-churn
-
- Original license: CC BY-NC-SA 4.0
-
- 
-
-## This repository does not contain or distribute the original dataset.
- 
-
-### Synthetic Data Features
-
-- 100,000+ records
-
-- Period: 2023-01-01 → 2024-12-31
-
-- Gradual conceptual drift (Fiber optic growth, Electronic check decline, churn decline, etc.)
-
-- `RecordDate` column for time analysis
-
-- Realistic dependencies between features (like in the real world)
-
- 
-
-## How to generate a dataset
-
-
-## 1. Clone the repository
-
-```sh
- git clone https://github.com/<your repo>/telco-churn-mlops-synthetic.git
-```
-```sh
- cd telco-churn-mlops-synthetic
-```
- 
-
-## 2. Create a virtual environment and install dependencies
-
-```sh
- python -m venv venv
-```
-```sh
- source venv/bin/activate # Windows: venv\\Scripts\\activate
-```
-```sh
- pip install -r requirements.txt
-```
- 
-
-## 3. Generate a dataset
-
-
-## Standatd generation
-```sh
-python generate_dataset.py
-```
-## Custom generation
-```sh
-python generate_dataset.py --samples 100000 --output-dir my_data/
-```
-## Custom generation with date
-
-```sh
-python generate_dataset.py --samples 50000 --start-date 2022-01-01 --end-date 2024-12-31
-```
-
-## Enhanced Custom generation
-
-# Звичайний запуск (використовує config.yaml)
-```sh
-python src/generate_dataset_ext.py
-```
-# Перевизначити кількість клієнтів
-```sh
-python src/generate_dataset_ext.py --override-samples 20000
-```
-# Використати інший конфіг
-```sh
-python src/generate_dataset_ext.py --config config/my_experiment.yaml
-```
-# Full extended
-
-```sh
-python src/generate_dataset_ext.py --samples 20000 --conv-samples 3000
-```
-
-## 📊 What will you get?
-```
-data/
-├── telco_customers.csv           # 50,000 clients with drift
-├── support_conversations.csv     # ~7,500 dialogs
-├── knowledge_base.csv            # 8 documents
-└── knowledge_base.json           # The same in json JSON
-```
-
-
-
-# Recommendations for using make
-
-- make help # see all available commands
-- make install # first time
-- make install-dev # if you want ruff, black, jupyter
-- make generate-ext # main generation
-- make explore # open Jupyter
-- make lint # check style
-- make format # fix style
-- make clean-data # clean only data
-
-# 1. Data generation (as before)
-```sh
-make docker-up
-```
-# or
-```sh
-docker compose up -d generator
-```
-
-# 2. Launch Jupyter
-```sh
-make jupyter-up
-```
-
-# 3. Let's look at the logs → there will be a link and a token
-```sh
-make jupyter-logs
-```
-
-# Example of output in the logs:
-# http://127.0.0.1:8888/lab?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-# 4. Stop Jupyter
-
-```sh
-make jupyter-down
-```
-
-If you want to launch Jupyter without docker-compose (one-time)
-Add another target to the Makefile (alternative):
-makefilejupyter-standalone: ​​## Run Jupyter in a single container without compose
-```sh
-	docker run -d \
-		--name temp-jupyter \
-		-p 8888:8888 \
-		-v $(PWD)/notebooks:/home/jovyan/work \
-		-v $(PWD)/data:/home/jovyan/data:ro \
-		-e JUPYTER_ENABLE_LAB=yes \
-		-e JUPYTER_TOKEN=secret123 \
-		quay.io/jupyter/scipy-notebook:latest
-```
-
-jupyter-standalone-stop: ## Зупинити та видалити standalone Jupyter
-
-```sh
-	docker stop temp-jupyter && docker rm temp-jupyter 
-```    
+make help: List all commands.
+make install: Install base dependencies.
+make install-dev: Install development tools (e.g., Ruff, Black, Jupyter).
+make generate-ext: Generate extended dataset.
+make explore: Launch Jupyter.
+make lint: Check code style.
+make format: Fix code style.
+make clean-data: Clean generated data.
+make train: Train the churn model (logs to MLflow).
+make docker-up: Start all services via Docker Compose.
+make jupyter-up: Launch Jupyter container.
+make jupyter-down: Stop Jupyter.
+make jupyter-logs: View Jupyter logs (includes access token).
 
 ## ML Training
-Запустіть `make train` для тренування моделі churn prediction.
+Train a churn prediction model using pipelines/train.py, which is instrumented with MLflow for logging parameters, metrics, and artifacts.
 
-## Testing the Predict API
+Start the MLflow tracking server (locally or via Docker Compose).
+Set environment variables:textexport MLFLOW_TRACKING_URI=http://localhost:5000
+export MLFLOW_EXPERIMENT=telco_churn_experiment
+export MLFLOW_REGISTER_MODEL=true  # Optional: Register model in registry
+Run training:textmake train  # Or python pipelines/train.py
 
-The `/predict` endpoint accepts customer features as JSON and returns churn prediction.
+The script loads data from data/, trains a model (e.g., RandomForest or similar), logs to MLflow, and optionally registers the model.
 
-### Quick test with curl:
+## MLflow Integration
 
-```bash
-curl -X POST http://localhost:8000/predict \
+MLflow is central to experiment tracking, model registry, and serving in this project.
+
+Setup: Use mlflow/ for configurations. Start the server:textmlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./mlartifacts --host 0.0.0.0 --port 5000Or via Docker Compose (service defined in docker-compose.yml with volumes for mlruns/ and database).
+Tracking: During training (pipelines/train.py), parameters (e.g., n_estimators), metrics (e.g., accuracy), and the model are logged using mlflow.start_run(), mlflow.log_param(), mlflow.log_metric(), and mlflow.sklearn.log_model().
+Model Registry: Register models programmatically with mlflow/mlflow_register.py or directly in training via registered_model_name. Promote models from staging to production.
+Viewing Experiments: Access the MLflow UI at http://localhost:5000.
+API Integration: The FastAPI service (src/api/) can load registered models from MLflow (e.g., mlflow.pyfunc.load_model("models:/churn@production")).
+Configurations: See mlflow/mlflow_config.yaml for sample values like tracking URI and experiment name.
+
+## API Serving
+Serve predictions via FastAPI.
+
+Start the API:textuvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reloadOr via Docker: docker compose up api (depends on MLflow service).
+### Endpoints:
+/health: Check service status and model loading.
+/predict: POST customer features (JSON) for churn probability.
+
+
+Example curl test:
+textcurl -X POST http://localhost:8000/predict \
   -H "Content-Type: application/json" \
-  -d '{
-    "tenure": 12,
-    "MonthlyCharges": 65.5,
-    "TotalCharges": 786.0,
-    "gender": "Male",
-    "SeniorCitizen": 0,
-    "Partner": "Yes",
-    "Dependents": "No",
-    "PhoneService": "Yes",
-    "MultipleLines": "No",
-    "InternetService": "Fiber optic",
-    "OnlineSecurity": "No",
-    "OnlineBackup": "No",
-    "DeviceProtection": "No",
-    "TechSupport": "No",
-    "StreamingTV": "No",
-    "StreamingMovies": "No",
-    "Contract": "Month-to-month",
-    "PaperlessBilling": "Yes",
-    "PaymentMethod": "Electronic check"
-  }'
-```
+  -d '{"tenure": 12, "MonthlyCharges": 65.5, "TotalCharges": 786.0, "gender": "Male", "SeniorCitizen": 0, "Partner": "Yes", "Dependents": "No", "PhoneService": "Yes", "MultipleLines": "No", "InternetService": "Fiber optic", "OnlineSecurity": "No", "OnlineBackup": "No", "DeviceProtection": "No", "TechSupport": "No", "StreamingTV": "No", "StreamingMovies": "No", "Contract": "Month-to-month", "PaperlessBilling": "Yes", "PaymentMethod": "Electronic check"}'
 
-### Python script test:
-
-```bash
-# Install requests if not already installed
-pip install requests
-
-# Run the test script
-python test_api_predict.py
-```
-
-The test script will:
-1. Check `/health` endpoint (confirms API is running and model is loaded)
-2. Send sample customer data to `/predict`
-3. Display the churn prediction result (probability and binary classification)
-
-### Via Docker Compose:
-
-```bash
-# Start all services (generator, jupyter, api, mlflow)
-docker-compose up --build
-
-# In another terminal, test the API
-curl http://localhost:8000/health
-python test_api_predict.py
-```
+## Testing: 
+Run python tests/test_api_predict.py for automated checks.
 
 ## Deployment
-Використовуйте Kubernetes manifests в deployment/ для production.
-
+Use deployment/ for Kubernetes manifests to deploy the API and MLflow in production.
 ## Monitoring
-Скрипти для дріфту в monitoring/.
+Scripts in monitoring/ handle data/concept drift detection, A/B testing, and shadow datasets. Integrate with MLflow for comparing model versions.
+## License
+MIT License. See LICENSE for details.
+dvc.yaml: DVC pipeline definitions.
+Makefile: Convenience commands for setup, generation, training, and more.
+requirements-*.txt: Python dependencies for base, API, dev, and ML.
