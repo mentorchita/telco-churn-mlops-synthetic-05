@@ -79,19 +79,19 @@ Output files will be placed in data/ (e.g., telco_customers.csv, support_convers
 
 Use make for streamlined workflows:
 
-> make help: List all commands.
-> make install: Install base dependencies.
-> make install-dev: Install development tools (e.g., Ruff, Black, Jupyter).
-> make generate-ext: Generate extended dataset.
-> make explore: Launch Jupyter.
-> make lint: Check code style.
-> make format: Fix code style.
-> make clean-data: Clean generated data.
-> make train: Train the churn model (logs to MLflow).
-> make docker-up: Start all services via Docker Compose.
-> make jupyter-up: Launch Jupyter container.
-> make jupyter-down: Stop Jupyter.
-> make jupyter-logs: View Jupyter logs (includes access token).
+- make help: List all commands.
+- make install: Install base dependencies.
+- make install-dev: Install development tools (e.g., Ruff, Black, Jupyter).
+- make generate-ext: Generate extended dataset.
+- make explore: Launch Jupyter.
+- make lint: Check code style.
+- make format: Fix code style.
+- make clean-data: Clean generated data.
+- make train: Train the churn model (logs to MLflow).
+- make docker-up: Start all services via Docker Compose.
+- make jupyter-up: Launch Jupyter container.
+- make jupyter-down: Stop Jupyter.
+- make jupyter-logs: View Jupyter logs (includes access token).
 
 ## ML Training
 Запустіть `make train` для тренування моделі churn prediction.
